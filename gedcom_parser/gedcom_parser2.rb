@@ -7,9 +7,7 @@ class GedcomParser2
 
   def build_tree(input)
     root = Node.new(name: "gedcom")
-    node_stack = []
-    node_stack << root
-
+    node_stack = [root]
     input.each_line do |line|
       next if line =~ /^\s*$/
       level, id_or_tag, data = *line.strip.split(/\s+/, 3)
