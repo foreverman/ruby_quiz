@@ -1,6 +1,11 @@
 class GedcomParser2
   
   def parse(input)
+    root = build_tree(input)
+    Formatter.new.format(root, 0)
+  end
+
+  def build_tree(input)
     root = Node.new(name: "gedcom")
     node_stack = []
     node_stack << root
@@ -26,7 +31,7 @@ class GedcomParser2
       node_stack.last.add_child(node)
       node_stack << node
     end
-    Formatter.new.format(root, 0)
+    root
   end
 end
 
@@ -48,37 +53,49 @@ end
 class Formatter
   def format(node, identation_level=0)
     result = ""
-    
-    #output start tag
-    result << "  " * identation_level
+    write_start_tag(result, node, identation_level)
+    write_content(result, node, identation_level)
+    write_child_nodes(result, node, identation_level)
+    write_end_tag(result, node, identation_level)
+    result
+  end
+
+  private
+  def write_child_nodes(result, node, identation_level)
+    node.children.each do |child_node|
+      result << "\n"
+      result << format(child_node, identation_level + 1)
+    end
+  end
+  def write_start_tag(result, node, identation_level)
+    write_identations(result, identation_level)
     result << "<#{node.name}"
     if node.id
       result << " id=\"#{node.id}\""
     end
     result << ">"
+  end
 
-    #output content
+  def write_content(result, node, identation_level)
     if node.content
       if node.children.any?
         result << "\n"
-        result << "  " * (identation_level + 1)
+        write_identations(result, identation_level + 1)
       end
       result << node.content
     end
+  end
 
-    node.children.each do |child_node|
-      result << "\n"
-      result << format(child_node, identation_level + 1)
-    end
-
-    #output end tag
+  def write_end_tag(result, node, identation_level)
     if node.children.any?
       result << "\n"
-      result << "  " * identation_level
+      write_identations(result, identation_level)
     end
     result << "</#{node.name}>"
-
-    result
+  end
+  
+  def write_identations(result, identation_level)
+      result << "  " * identation_level
   end
 end
 
