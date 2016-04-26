@@ -1,0 +1,4 @@
+1) 将解析PromotionalOffer的代码移到ReceiptGenerator
+2) 将 buy_two_one_free_applied? 和 items_with_buy_two_one_free移到 ReceiptGenerator?
+3) Discount 接收一个参数作为折扣率
+4) 使用BigDecimal计算钱, 处理四舍五入问题?
